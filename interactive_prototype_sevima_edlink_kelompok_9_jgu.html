@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEVIMA EdLink - Interactive Prototype (Kelompok 9 JGU)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Phosphor Icons untuk ikon yang bersih dan konsisten -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+    }
+
+    /* Custom Scrollbar untuk layar ponsel */
+    .phone-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .phone-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .phone-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+
+    /* Mode Kontras Tinggi (Rekomendasi INC02 - Keterbacaan di bawah cahaya terang) */
+    .high-contrast-mode .phone-screen {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+    }
+    .high-contrast-mode .text-sec-aaa {
+      color: #000000 !important;
+      font-weight: 600 !important;
+    }
+    .high-contrast-mode .card-surface {
+      border: 2px solid #000000 !important;
+      background-color: #ffffff !important;
+    }
+    .high-contrast-mode .btn-primary-edlink {
+      background-color: #004d25 !important;
+      border: 2px solid #000000 !important;
+      color: #ffffff !important;
+    }
+
+    /* Warna teks sekunder yang memenuhi WCAG 2.2 AAA (7.35:1 pada latar putih - Rekomendasi ACC01) */
+    .text-sec-aaa {
+      color: #595555;
+    }
+
+    /* Animasi transisi antar screen & modal */
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0.5;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.2s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col lg:flex-row items-center justify-center p-4 lg:p-6 gap-6">
+
+  <!-- ===================================================================== -->
+  <!-- PANEL KIRI: PANDUAN WALKTHROUGH & AUDIT TRACEABILITY (UNTUK DEMO/PDF) -->
+  <!-- ===================================================================== -->
+  <aside class="w-full max-w-md lg:w-[400px] bg-white rounded-2xl shadow-md border border-slate-200 p-5 flex flex-col gap-4 order-2 lg:order-1">
+    <!-- Header Identitas Kelompok -->
+    <div class="border-b border-slate-200 pb-3">
+      <div class="flex items-center justify-between">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-900">
+          <i class="ph-fill ph-check-circle text-emerald-700"></i> Assignment 3 IMK (SIN63122)
+        </span>
+        <span class="text-xs font-medium text-slate-500">Kelompok 9 • JGU</span>
+      </div>
+      <h1 class="text-lg font-bold text-slate-900 mt-2">SEVIMA EdLink — Clickable Prototype</h1>
+      <p class="text-xs text-slate-600 mt-0.5">
+        Disusun oleh: <strong>Rafi Bagas Naufally</strong> &amp; <strong>Panji Widagdo</strong>
+      </p>
+    </div>
+
+    <!-- Indikator Progress Alur (S1 -> S2 -> S3 -> S4 -> S5) -->
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Status Alur Interaksi</span>
+        <span id="step-badge" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+          S1: Tentang Tugas
+        </span>
+      </div>
+      <div class="grid grid-cols-5 gap-1.5">
+        <div id="prog-s1" class="h-2 rounded-full bg-emerald-600 transition-all"></div>
+        <div id="prog-s2" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+        <div id="prog-s3" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+        <div id="prog-s4" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+        <div id="prog-s5" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+      </div>
+      <div class="flex justify-between text-[10px] font-medium text-slate-500 mt-1">
+        <span>S1 Detail</span>
+        <span>S2 Drive</span>
+        <span>S3 Upload</span>
+        <span>S4 Preview</span>
+        <span>S5 Selesai</span>
+      </div>
+    </div>
+
+    <!-- Kartu Kode Audit Tugas 2 yang Diterapkan pada Layar Aktif -->
+    <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+      <div class="flex items-center gap-1.5 text-xs font-bold text-slate-800 mb-2">
+        <i class="ph-fill ph-shield-check text-emerald-700 text-base"></i>
+        <span>Perbaikan Audit Tugas 2 di Layar Ini:</span>
+      </div>
+      <ul id="audit-notes-list" class="space-y-2 text-xs text-slate-700 leading-relaxed">
+        <!-- Diisi secara dinamis via JS berdasarkan layar aktif -->
+      </ul>
+    </div>
+
+    <!-- Panel Kontrol Simulasi (Untuk Pengujian & Video Walkthrough) -->
+    <div class="border-t border-slate-200 pt-3.5 space-y-2.5">
+      <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+        Kontrol Simulasi &amp; Aksesibilitas
+      </span>
+
+      <!-- Toggle Mode Kontras Tinggi (INC02) -->
+      <label class="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+        <div class="flex items-center gap-2">
+          <i class="ph-bold ph-sun text-amber-600 text-base"></i>
+          <div>
+            <p class="text-xs font-semibold text-slate-800">Mode Kontras Tinggi (INC02)</p>
+            <p class="text-[11px] text-slate-500">Simulasi keterbacaan di bawah cahaya matahari</p>
+          </div>
+        </div>
+        <input type="checkbox" id="toggle-contrast" class="w-4 h-4 accent-emerald-700 rounded cursor-pointer" onchange="toggleHighContrast(this.checked)" />
+      </label>
+
+      <!-- Tombol Simulasi Error / Koneksi Terputus (INC01 & RES03) -->
+      <button type="button" onclick="triggerNetworkErrorSimulation()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-200 text-xs font-semibold transition cursor-pointer">
+        <span class="flex items-center gap-2">
+          <i class="ph-bold ph-wifi-slash text-rose-700 text-base"></i>
+          Simulasi Koneksi Terputus (INC01)
+        </span>
+        <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-200/80 font-bold">Error Path</span>
+      </button>
+
+      <!-- Tombol Simulasi Tenggat Berakhir (RES06 & F-05) -->
+      <button type="button" id="btn-sim-deadline" onclick="toggleDeadlineSimulation()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-semibold transition cursor-pointer">
+        <span class="flex items-center gap-2">
+          <i class="ph-bold ph-lock-key text-amber-700 text-base"></i>
+          <span id="text-sim-deadline">Simulasi Waktu Tenggat Berakhir (RES06)</span>
+        </span>
+        <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-200/80 font-bold">Lock State</span>
+      </button>
+
+      <!-- Tombol Reset Prototype -->
+      <button type="button" onclick="resetPrototype()" class="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold transition cursor-pointer">
+        <i class="ph-bold ph-arrow-counter-clockwise"></i>
+        Reset Prototype ke Awal (S1)
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===================================================================== -->
+  <!-- PANEL TENGAH: FRAME SMARTPHONE INTERAKTIF (SEVIMA EDLINK)             -->
+  <!-- ===================================================================== -->
+  <main id="phone-wrapper" class="order-1 lg:order-2 flex flex-col items-center">
+    <!-- Frame Ponsel (375x760px responsif) -->
+    <div class="relative w-[360px] sm:w-[385px] h-[740px] bg-slate-900 rounded-[44px] p-3 shadow-2xl border-[4px] border-slate-800 flex flex-col">
+      <!-- Notch / Kamera Depan -->
+      <div class="absolute top-3 left-1/2 -translate-x-1/2 w-32 h-5 bg-slate-900 rounded-b-2xl z-30 flex items-center justify-center">
+        <div class="w-10 h-1 bg-slate-700 rounded-full"></div>
+      </div>
+
+      <!-- Layar Ponsel -->
+      <div class="phone-screen relative w-full h-full bg-[#F8FAFC] rounded-[34px] overflow-hidden flex flex-col">
+        
+        <!-- Status Bar Android/iOS -->
+        <div class="h-8 px-6 pt-1.5 flex items-center justify-between text-[11px] font-semibold text-slate-800 bg-white z-20 select-none">
+          <span>10:12</span>
+          <div class="flex items-center gap-1.5">
+            <i id="status-wifi-icon" class="ph-bold ph-wifi-high text-slate-800"></i>
+            <i class="ph-fill ph-battery-full text-slate-800"></i>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- LAYAR 1 (S1): HALAMAN TENTANG TUGAS (ASSIGNMENT DETAILS)        -->
+        <!-- =============================================================== -->
+        <section id="screen-s1" class="flex-1 flex flex-col overflow-hidden">
+          <!-- App Top Bar -->
+          <header class="bg-white px-4 py-3 border-b border-slate-200 flex items-center gap-3">
+            <button type="button" aria-label="Kembali ke Jadwal Kelas" onclick="showToast('Info: Ini adalah titik awal (Start Point) simulasi tugas.')" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-800">
+              <i class="ph-bold ph-arrow-left text-lg"></i>
+            </button>
+            <div class="min-w-0 flex-1">
+              <p class="text-[11px] font-medium text-sec-aaa truncate">Sesi 6 • Interaksi Manusia dan Komputer (SIN63122)</p>
+              <h2 class="text-sm font-bold text-slate-900 truncate">Detail Tugas Perkuliahan</h2>
+            </div>
+          </header>
+
+          <!-- Konten Scrollable S1 -->
+          <div class="flex-1 overflow-y-auto phone-scroll p-4 space-y-3.5">
+            <!-- Banner Info Netral (Rekomendasi RES05 & ACC02: Menghapus tekanan sosial & tidak mengandalkan warna saja) -->
+            <div class="card-surface bg-sky-50 border border-sky-200 rounded-xl p-3 flex items-start gap-2.5">
+              <i class="ph-fill ph-info text-sky-700 text-lg shrink-0 mt-0.5"></i>
+              <div class="text-xs text-slate-800 leading-snug">
+                <span class="font-bold text-sky-950">Informasi Pengumpulan:</span> Pastikan berkas telah diperiksa melalui pratinjau sebelum dikirim.
+              </div>
+            </div>
+
+            <!-- Kartu Utama Tentang Tugas -->
+            <div class="card-surface bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold uppercase tracking-wide text-sec-aaa">Tentang Tugas</span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-900">
+                  <i class="ph-fill ph-users-three"></i> Tugas Kelompok
+                </span>
+              </div>
+
+              <h3 class="text-base font-bold text-slate-900 leading-snug">
+                Assignment 3 - Interactive Prototyping
+              </h3>
+
+              <!-- Batas Pengumpulan dengan Teks Kontras Tinggi #595555 (ACC01) -->
+              <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80 space-y-1">
+                <div class="flex items-center gap-1.5 text-xs font-semibold text-sec-aaa">
+                  <i class="ph-bold ph-calendar-blank text-emerald-700"></i>
+                  <span>Batas Pengumpulan:</span>
+                </div>
+                <p id="s1-deadline-text" class="text-sm font-bold text-slate-900">
+                  Kamis, 19 Nov 2026, 10:30 WIB
+                </p>
+                <p id="s1-countdown-badge" class="text-xs font-medium text-emerald-800 flex items-center gap-1">
+                  <i class="ph-fill ph-clock"></i> Sisa waktu: 4 hari 15 jam lagi
+                </p>
+              </div>
+
+              <!-- Deskripsi Tugas -->
+              <div class="space-y-1">
+                <p class="text-xs font-semibold text-sec-aaa">Deskripsi:</p>
+                <p class="text-xs text-slate-800 leading-relaxed">
+                  Dear Students, berikut untuk Assignment 3 Interactive Prototyping. Kembangkan clickable prototype berdasarkan hasil studi lapangan Tugas 1 dan audit desain Tugas 2.
+                </p>
+              </div>
+
+              <!-- Lampiran Soal -->
+              <div class="space-y-1.5 pt-1">
+                <p class="text-xs font-semibold text-sec-aaa">Lampiran Dosen:</p>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                  <div class="w-9 h-9 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center shrink-0 font-bold text-xs">
+                    PDF
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-slate-900 truncate">Assignment_3_Interactive_Prototype.pdf</p>
+                    <p class="text-[11px] text-sec-aaa">302,07 KB • Dokumen Panduan</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kartu Anggota Kelompok -->
+            <div class="card-surface bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-900">Kelompok 9</span>
+                <span class="text-xs font-semibold text-sec-aaa">2 Anggota</span>
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-emerald-700 text-white text-xs font-bold flex items-center justify-center">R</div>
+                  <div>
+                    <p class="text-xs font-semibold text-slate-900">Rafi Bagas Naufally</p>
+                    <p class="text-[11px] text-sec-aaa">092024090195</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-full bg-teal-700 text-white text-xs font-bold flex items-center justify-center">P</div>
+                  <div>
+                    <p class="text-xs font-semibold text-slate-900">Panji Widagdo</p>
+                    <p class="text-[11px] text-sec-aaa">092024090212</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kartu Jawaban Anda (Status Belum Dikumpulkan atau Draf Tersimpan) -->
+            <div class="card-surface bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-900">Jawaban Anda</span>
+                <span id="s1-status-pill" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-sec-aaa">
+                  Belum Dikumpulkan
+                </span>
+              </div>
+
+              <!-- Notifikasi Draf Lokal jika pernah mengalami koneksi terputus (INC01) -->
+              <div id="s1-draft-box" class="hidden bg-amber-50 border border-amber-300 rounded-xl p-3 space-y-2">
+                <div class="flex items-start gap-2">
+                  <i class="ph-fill ph-floppy-disk text-amber-700 text-base shrink-0 mt-0.5"></i>
+                  <div class="text-xs">
+                    <p class="font-bold text-amber-950">Draf Lokal Tersimpan</p>
+                    <p id="s1-draft-filename" class="text-amber-900 mt-0.5">Tugas3_Prototype_Kelompok9.pdf (1.8 MB)</p>
+                  </div>
+                </div>
+                <button type="button" onclick="startUploadProcess(selectedFile)" class="w-full py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition">
+                  Lanjutkan Unggah Draf
+                </button>
+              </div>
+
+              <!-- Tombol Utama Tambahkan Jawaban (Target sentuh minimal 48px - ACC04) -->
+              <button type="button" id="btn-add-answer" onclick="openUploadMethodSheet()" class="btn-primary-edlink w-full min-h-[48px] px-4 py-3 rounded-xl bg-[#007A3D] hover:bg-[#006231] active:scale-[0.99] text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer">
+                <i class="ph-bold ph-plus-circle text-lg"></i>
+                <span>Tambahkan Jawaban (Max 10 MB)</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- LAYAR 2 (S1 -> S2): BOTTOM SHEET PILIHAN JALUR UNGGAH (INC03)   -->
+        <!-- =============================================================== -->
+        <div id="sheet-upload-method" class="hidden absolute inset-0 z-30 bg-slate-900/50 backdrop-blur-[1px] flex flex-col justify-end">
+          <div class="bg-white rounded-t-3xl p-5 space-y-4 shadow-2xl animate-slide-up">
+            <div class="w-10 h-1 bg-slate-300 rounded-full mx-auto"></div>
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Pilih Metode Pengumpulan</h3>
+                <p class="text-xs text-sec-aaa">Pilih jalur yang sesuai dengan jenis jawaban Anda</p>
+              </div>
+              <button type="button" aria-label="Tutup pilihan metode" onclick="closeUploadMethodSheet()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700">
+                <i class="ph-bold ph-x text-base"></i>
+              </button>
+            </div>
+
+            <!-- Opsi 1: Lampirkan File (Rekomendasi INC03: Keterangan penjelas & batas ukuran) -->
+            <button type="button" onclick="goToGoogleDrive()" class="w-full text-left p-3.5 rounded-2xl border-2 border-emerald-600/30 hover:border-emerald-600 bg-emerald-50/40 hover:bg-emerald-50 transition flex items-start gap-3.5 cursor-pointer">
+              <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                <i class="ph-bold ph-paperclip text-xl"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-bold text-slate-900">Lampirkan File (Max 10 MB)</span>
+                  <i class="ph-bold ph-caret-right text-emerald-700"></i>
+                </div>
+                <p class="text-xs text-sec-aaa mt-1 leading-relaxed">
+                  Untuk berkas dokumen atau gambar (<strong>PDF, DOCX, JPG/PNG</strong>) dari perangkat atau <strong>Google Drive</strong>.
+                </p>
+              </div>
+            </button>
+
+            <!-- Opsi 2: Teks Editor + Uji Tautan (Rekomendasi INC03 & RES04) -->
+            <button type="button" onclick="openTextEditorLinkCheck()" class="w-full text-left p-3.5 rounded-2xl border border-slate-200 hover:border-slate-400 bg-white hover:bg-slate-50 transition flex items-start gap-3.5 cursor-pointer">
+              <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                <i class="ph-bold ph-link text-xl"></i>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-bold text-slate-900">Teks Editor &amp; Tautan</span>
+                  <i class="ph-bold ph-caret-right text-slate-500"></i>
+                </div>
+                <p class="text-xs text-sec-aaa mt-1 leading-relaxed">
+                  Untuk menulis jawaban langsung atau menempelkan tautan <strong>Google Drive / YouTube</strong> (dilengkapi uji akses tautan).
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- MODAL SIMULASI UJI TAUTAN (REKOMENDASI RES04 - OPSIONAL)         -->
+        <!-- =============================================================== -->
+        <div id="modal-link-checker" class="hidden absolute inset-0 z-40 bg-slate-900/60 p-4 flex items-center justify-center">
+          <div class="bg-white rounded-2xl p-4 w-full space-y-3.5 shadow-xl animate-fade-in">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <h4 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                <i class="ph-bold ph-link-simple text-emerald-700"></i> Uji Akses Tautan (RES04)
+              </h4>
+              <button type="button" onclick="closeTextEditorLinkCheck()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center">
+                <i class="ph-bold ph-x"></i>
+              </button>
+            </div>
+            <p class="text-xs text-sec-aaa leading-relaxed">
+              Mencegah tautan Google Drive terkunci (<em>Restricted</em>) sehingga tidak bisa dibuka oleh dosen pengampu.
+            </p>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 mb-1">Tempel Tautan Google Drive / YouTube:</label>
+              <input id="input-drive-link" type="text" value="https://drive.google.com/file/d/19Kx_Tugas3_Kel9/view" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-600" />
+            </div>
+            <div id="link-check-result" class="hidden rounded-xl p-2.5 text-xs"></div>
+            <div class="flex gap-2 pt-1">
+              <button type="button" onclick="runLinkAccessTest()" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold cursor-pointer">
+                Uji Akses Tautan
+              </button>
+              <button type="button" onclick="closeTextEditorLinkCheck(); goToGoogleDrive();" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-semibold cursor-pointer">
+                Ke Tab Google Drive
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- LAYAR 3 (S2): MEDIA LIBRARY - TAB GOOGLE DRIVE                  -->
+        <!-- =============================================================== -->
+        <section id="screen-s2" class="hidden flex-1 flex flex-col overflow-hidden">
+          <!-- Header Media Library -->
+          <header class="bg-white px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <button type="button" aria-label="Kembali ke Detail Tugas" onclick="navigateTo('s1')" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-800">
+                <i class="ph-bold ph-arrow-left text-lg"></i>
+              </button>
+              <h2 class="text-base font-bold text-slate-900">Media Library</h2>
+            </div>
+            <span class="text-[11px] font-semibold text-sec-aaa bg-slate-100 px-2 py-1 rounded-md">Max 10 MB</span>
+          </header>
+
+          <!-- Tabs Navigasi Sumber Berkas -->
+          <div class="bg-white grid grid-cols-3 border-b border-slate-200 text-xs font-semibold">
+            <button type="button" onclick="showToast('Tab Personal berisi penyimpanan lokal EdLink. Silakan pilih tab Google Drive.')" class="py-2.5 text-sec-aaa hover:text-slate-900 border-b-2 border-transparent">
+              Personal
+            </button>
+            <button type="button" onclick="showToast('Tab Perguruan Tinggi berisi materi kampus. Silakan pilih tab Google Drive.')" class="py-2.5 text-sec-aaa hover:text-slate-900 border-b-2 border-transparent">
+              Perguruan Tinggi
+            </button>
+            <button type="button" class="py-2.5 text-[#007A3D] border-b-2 border-[#007A3D] font-bold flex items-center justify-center gap-1">
+              <i class="ph-fill ph-google-drive-logo"></i> Google Drive
+            </button>
+          </div>
+
+          <!-- Konten Google Drive -->
+          <div class="flex-1 overflow-y-auto phone-scroll p-4 space-y-3.5">
+            <!-- Kotak Transparansi & Privasi Google Drive (Rekomendasi RES02) -->
+            <div class="card-surface bg-emerald-50/90 border border-emerald-200 rounded-xl p-3 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-emerald-950 flex items-center gap-1">
+                  <i class="ph-fill ph-shield-check text-emerald-700 text-sm"></i>
+                  Akses Terbatas &amp; Transparan (RES02)
+                </span>
+                <span class="text-[10px] font-semibold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                  Terhubung
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-800 leading-relaxed">
+                EdLink <strong>hanya membaca berkas yang Anda pilih</strong> untuk tugas ini. Pratinjau tidak disimpan permanen di server sebelum Anda menekan <strong>Kirim</strong>.
+              </p>
+              <p class="text-[11px] font-medium text-sec-aaa flex items-center gap-1 pt-0.5">
+                <i class="ph-bold ph-user-circle"></i> Akun: <strong>rafi.student@jgu.ac.id</strong>
+              </p>
+            </div>
+
+            <!-- Keterangan Format yang Diterima (INC03) -->
+            <div class="flex items-center justify-between text-[11px] text-sec-aaa px-1">
+              <span>Format: PDF, DOCX, PPTX, JPG/PNG</span>
+              <span>Maks: 10 MB</span>
+            </div>
+
+            <!-- Daftar Berkas di Google Drive -->
+            <div class="space-y-2.5">
+              <p class="text-xs font-bold text-slate-800 px-1">Pilih Berkas Tugas Anda:</p>
+
+              <!-- File 1 (Utama) -->
+              <button type="button" onclick="selectDriveFile('Tugas3_Prototype_Kelompok9.pdf', '1.8 MB', 'PDF')" class="card-surface w-full text-left p-3.5 rounded-2xl bg-white border-2 border-emerald-600/40 hover:border-emerald-600 hover:bg-emerald-50/30 shadow-sm transition flex items-center gap-3 cursor-pointer group">
+                <div class="w-11 h-11 rounded-xl bg-rose-100 text-rose-700 flex flex-col items-center justify-center shrink-0">
+                  <i class="ph-fill ph-file-pdf text-xl"></i>
+                  <span class="text-[9px] font-extrabold">PDF</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-800">
+                    Tugas3_Prototype_Kelompok9.pdf
+                  </p>
+                  <p class="text-[11px] text-sec-aaa mt-0.5">1.8 MB • Diubah hari ini, 09:45</p>
+                </div>
+                <span class="px-2.5 py-1.5 rounded-lg bg-[#007A3D] text-white text-[11px] font-semibold shrink-0">
+                  Pilih
+                </span>
+              </button>
+
+              <!-- File 2 -->
+              <button type="button" onclick="selectDriveFile('Laporan_HCI_Kelompok9.pdf', '2.4 MB', 'PDF')" class="card-surface w-full text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/30 shadow-sm transition flex items-center gap-3 cursor-pointer group">
+                <div class="w-11 h-11 rounded-xl bg-rose-100 text-rose-700 flex flex-col items-center justify-center shrink-0">
+                  <i class="ph-fill ph-file-pdf text-xl"></i>
+                  <span class="text-[9px] font-extrabold">PDF</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-800">
+                    Laporan_HCI_Kelompok9.pdf
+                  </p>
+                  <p class="text-[11px] text-sec-aaa mt-0.5">2.4 MB • Diubah kemarin</p>
+                </div>
+                <span class="px-2.5 py-1.5 rounded-lg bg-slate-100 group-hover:bg-[#007A3D] text-slate-800 group-hover:text-white text-[11px] font-semibold shrink-0 transition">
+                  Pilih
+                </span>
+              </button>
+
+              <!-- File 3 -->
+              <button type="button" onclick="selectDriveFile('Catatan_Rapat.docx', '450 KB', 'DOCX')" class="card-surface w-full text-left p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/30 shadow-sm transition flex items-center gap-3 cursor-pointer group">
+                <div class="w-11 h-11 rounded-xl bg-blue-100 text-blue-700 flex flex-col items-center justify-center shrink-0">
+                  <i class="ph-fill ph-file-doc text-xl"></i>
+                  <span class="text-[9px] font-extrabold">DOCX</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-800">
+                    Catatan_Rapat.docx
+                  </p>
+                  <p class="text-[11px] text-sec-aaa mt-0.5">450 KB • Diubah 12 Nov 2026</p>
+                </div>
+                <span class="px-2.5 py-1.5 rounded-lg bg-slate-100 group-hover:bg-[#007A3D] text-slate-800 group-hover:text-white text-[11px] font-semibold shrink-0 transition">
+                  Pilih
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- LAYAR 4 (S3): PROSES UNGGAH / MEMUAT BERKAS (ACC03 & F-05)      -->
+        <!-- =============================================================== -->
+        <section id="screen-s3" class="hidden flex-1 flex flex-col overflow-hidden">
+          <header class="bg-white px-4 py-3 border-b border-slate-200 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center">
+              <i class="ph-bold ph-cloud-arrow-up text-lg"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900">Mengunggah Lampiran</h2>
+              <p class="text-[11px] text-sec-aaa">Memvalidasi ukuran dan pratinjau berkas</p>
+            </div>
+          </header>
+
+          <div class="flex-1 p-5 flex flex-col justify-center items-center text-center space-y-5">
+            <!-- Ikon Berkas -->
+            <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-inner">
+              <i class="ph-fill ph-file-pdf text-3xl"></i>
+            </div>
+
+            <!-- Keterangan Spesifik Menggantikan "Mohon tunggu" (ACC03) -->
+            <div class="space-y-1 w-full">
+              <p id="s3-filename" class="text-sm font-bold text-slate-900 truncate">
+                Tugas3_Prototype_Kelompok9.pdf
+              </p>
+              <p id="s3-status-text" aria-live="polite" class="text-xs font-semibold text-emerald-800">
+                Mengunggah berkas dari Google Drive... 60%
+              </p>
+            </div>
+
+            <!-- Progress Bar Visual (ACC03) -->
+            <div class="w-full space-y-1.5">
+              <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                <div id="s3-progress-bar" class="h-full bg-[#007A3D] rounded-full transition-all duration-300" style="width: 60%;"></div>
+              </div>
+              <div class="flex justify-between text-[11px] font-medium text-sec-aaa">
+                <span>Sumber: Google Drive</span>
+                <span id="s3-percent-label">60%</span>
+              </div>
+            </div>
+
+            <!-- Tombol Kontrol Simulasi Cepat di Dalam Layar agar Mudah Didemokan -->
+            <div class="w-full bg-slate-100 rounded-xl p-3 border border-slate-200 space-y-2">
+              <p class="text-[11px] font-semibold text-sec-aaa">Simulasi Hasil Koneksi (Untuk Demo):</p>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="completeUploadSuccess()" class="py-2 px-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-semibold cursor-pointer">
+                  Lanjut Sukses (100%)
+                </button>
+                <button type="button" onclick="triggerNetworkErrorSimulation()" class="py-2 px-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-semibold cursor-pointer">
+                  Simulasi Koneksi Putus
+                </button>
+              </div>
+            </div>
+
+            <!-- Tombol Batalkan Unggahan (Rekomendasi F-05) -->
+            <button type="button" onclick="cancelUpload()" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-800 text-xs font-bold transition cursor-pointer">
+              Batalkan Unggahan
+            </button>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- LAYAR 4B (S6): ERROR & RECOVERY STATE (INC01, ACC02, RES03)     -->
+        <!-- =============================================================== -->
+        <section id="screen-s6" class="hidden flex-1 flex flex-col overflow-hidden">
+          <header class="bg-white px-4 py-3 border-b border-slate-200 flex items-center gap-3">
+            <button type="button" aria-label="Kembali ke Detail Tugas" onclick="navigateTo('s1')" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-800">
+              <i class="ph-bold ph-arrow-left text-lg"></i>
+            </button>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900">Status Pengunggahan</h2>
+              <p class="text-[11px] text-sec-aaa">Pemulihan Kesalahan &amp; Draf Lokal</p>
+            </div>
+          </header>
+
+          <div class="flex-1 overflow-y-auto phone-scroll p-4 flex flex-col justify-between space-y-4">
+            <div class="space-y-4">
+              <!-- Banner Error dengan Ikon + Teks Tegas (ACC02: Tidak hanya mengandalkan warna merah) -->
+              <div role="alert" class="card-surface bg-rose-50 border-2 border-rose-600 rounded-2xl p-4 space-y-2">
+                <div class="flex items-center gap-2 text-rose-900">
+                  <i class="ph-fill ph-warning-octagon text-2xl text-rose-700 shrink-0"></i>
+                  <h3 class="text-sm font-extrabold">Perhatian: Gagal Mengunggah</h3>
+                </div>
+                <p class="text-xs font-semibold text-rose-950 leading-relaxed">
+                  Gagal mengunggah: Koneksi internet terputus saat menghubungi server SEVIMA EdLink.
+                </p>
+              </div>
+
+              <!-- Penjelasan Status Aman / Draf Otomatis (INC01 & RES03) -->
+              <div class="card-surface bg-emerald-50 border border-emerald-300 rounded-2xl p-4 space-y-2">
+                <div class="flex items-center gap-2 text-emerald-950">
+                  <i class="ph-fill ph-floppy-disk-back text-xl text-emerald-700 shrink-0"></i>
+                  <h4 class="text-xs font-bold">Berkas Tersimpan Otomatis Sebagai Draf</h4>
+                </div>
+                <p class="text-xs text-slate-800 leading-relaxed">
+                  Berkas Anda (<strong id="s6-filename">Tugas3_Prototype_Kelompok9.pdf</strong>) telah tersimpan otomatis sebagai draf lokal di perangkat pada pukul <strong>10:11 WIB</strong>. Anda tidak perlu mencari ulang berkas di Google Drive.
+                </p>
+                <div class="bg-white rounded-xl p-2.5 border border-emerald-200 flex items-center gap-2.5 mt-1">
+                  <i class="ph-fill ph-file-pdf text-rose-600 text-xl"></i>
+                  <div class="min-w-0 flex-1">
+                    <p id="s6-file-card-name" class="text-xs font-bold text-slate-900 truncate">Tugas3_Prototype_Kelompok9.pdf</p>
+                    <p id="s6-file-card-size" class="text-[11px] text-sec-aaa">1.8 MB • Draf Lokal Siap Dikirim</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tombol Pemulihan (Recovery Actions: Coba Lagi & Ganti Berkas) -->
+            <div class="space-y-2.5 pt-2">
+              <button type="button" onclick="retryUploadFromError()" class="btn-primary-edlink w-full min-h-[48px] px-4 py-3 rounded-xl bg-[#007A3D] hover:bg-[#006231] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer">
+                <i class="ph-bold ph-arrows-clockwise text-lg"></i>
+                <span>Coba Lagi</span>
+              </button>
+              <button type="button" onclick="navigateTo('s2')" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
+                <i class="ph-bold ph-folder-open"></i>
+                <span>Ganti Berkas</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- LAYAR 5 (S4): PRATINJAU BERKAS & KONFIRMASI (IR2, F-05, ACC04)  -->
+        <!-- =============================================================== -->
+        <section id="screen-s4" class="hidden flex-1 flex flex-col overflow-hidden">
+          <header class="bg-white px-4 py-3 border-b border-slate-200 flex items-center gap-3">
+            <button type="button" aria-label="Kembali ke Google Drive" onclick="navigateTo('s2')" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-800">
+              <i class="ph-bold ph-arrow-left text-lg"></i>
+            </button>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900">Pratinjau &amp; Kirim Tugas</h2>
+              <p class="text-[11px] text-sec-aaa">Periksa isi dokumen sebelum dikirim (IR2)</p>
+            </div>
+          </header>
+
+          <div class="flex-1 overflow-y-auto phone-scroll p-4 space-y-3.5">
+            <!-- Info Metadata Berkas Terpilih -->
+            <div class="card-surface bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                  <i class="ph-fill ph-file-pdf text-xl"></i>
+                </div>
+                <div class="min-w-0">
+                  <p id="s4-filename" class="text-xs font-bold text-slate-900 truncate">Tugas3_Prototype_Kelompok9.pdf</p>
+                  <p id="s4-filemeta" class="text-[11px] text-sec-aaa">1.8 MB • Sumber: Google Drive</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 text-[10px] font-bold shrink-0">
+                Siap Kirim
+              </span>
+            </div>
+
+            <!-- Kotak Pratinjau Visual Dokumen PDF (Mock Cover Halaman Sampul Kelompok 9) -->
+            <div class="card-surface bg-slate-200/80 rounded-2xl p-3 border border-slate-300 space-y-2">
+              <div class="flex items-center justify-between text-[11px] font-semibold text-sec-aaa px-1">
+                <span>Pratinjau Halaman 1 dari 3</span>
+                <span class="flex items-center gap-1"><i class="ph-bold ph-eye"></i> Verified Preview</span>
+              </div>
+
+              <!-- Mock Dokumen PDF -->
+              <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 text-center space-y-2.5 select-none">
+                <p class="text-[9px] font-bold uppercase tracking-widest text-rose-700">
+                  Jakarta Global University
+                </p>
+                <div class="w-10 h-10 mx-auto rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-700 font-extrabold text-xs">
+                  JGU
+                </div>
+                <h4 class="text-xs font-extrabold text-slate-900 leading-snug">
+                  PROTOTYPE DESIGN SUMMARY<br />ASSIGNMENT 3: INTERACTIVE PROTOTYPING
+                </h4>
+                <p class="text-[10px] text-sec-aaa">
+                  Studi Kasus: SEVIMA EdLink Mobile App<br />
+                  Mata Kuliah: Interaksi Manusia dan Komputer (SIN63122)
+                </p>
+                <div class="border-t border-slate-200 pt-2 text-[10px] font-semibold text-slate-800">
+                  Kelompok 9:<br />
+                  Rafi Bagas Naufally (092024090195)<br />
+                  Panji Widagdo (092024090212)
+                </div>
+              </div>
+            </div>
+
+            <!-- Pengingat Tenggat -->
+            <p class="text-[11px] text-sec-aaa text-center px-2">
+              Pastikan nama berkas dan isi dokumen sudah sesuai sebelum menekan tombol <strong>Kirim Tugas</strong>.
+            </p>
+          </div>
+
+          <!-- Footer Dua Tombol Terpisah dengan Jarak Aman (ACC04 & F-05) -->
+          <div class="bg-white p-4 border-t border-slate-200 grid grid-cols-2 gap-3">
+            <button type="button" onclick="navigateTo('s2')" class="min-h-[48px] px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer">
+              <i class="ph-bold ph-swap"></i>
+              <span>Ganti Berkas</span>
+            </button>
+            <button type="button" onclick="openConfirmSubmitModal()" class="btn-primary-edlink min-h-[48px] px-3 py-2.5 rounded-xl bg-[#007A3D] hover:bg-[#006231] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer">
+              <i class="ph-bold ph-paper-plane-tilt"></i>
+              <span>Kirim Tugas</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- OVERLAY MODAL KONFIRMASI PENGIRIMAN FINAL (RES01 & RES03)       -->
+        <!-- =============================================================== -->
+        <div id="modal-confirm-submit" class="hidden absolute inset-0 z-40 bg-slate-900/60 backdrop-blur-[1px] p-4 flex items-center justify-center">
+          <div role="dialog" aria-modal="true" aria-labelledby="confirm-title" class="bg-white rounded-2xl p-5 w-full space-y-4 shadow-2xl animate-fade-in">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                <i class="ph-bold ph-question text-xl"></i>
+              </div>
+              <div>
+                <h3 id="confirm-title" class="text-base font-bold text-slate-900">Kirim tugas sekarang?</h3>
+                <p id="confirm-file-summary" class="text-xs font-semibold text-emerald-800 mt-0.5">
+                  Berkas: Tugas3_Prototype_Kelompok9.pdf (1.8 MB)
+                </p>
+              </div>
+            </div>
+
+            <!-- Aturan Eksplisit Penggantian & Penguncian (RES01 & RES06) -->
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs text-slate-800 leading-relaxed">
+              Tugas akan dikirim ke sistem. Anda <strong>masih dapat mengganti atau menghapus berkas</strong> sampai batas pengumpulan pada <strong>Kamis, 19 Nov 2026 pukul 10.30 WIB</strong>. Setelah tenggat berakhir, jawaban akan dikunci otomatis.
+            </div>
+
+            <!-- Status Loading saat proses kirim agar tombol dinonaktifkan (RES03: Anti-Double Submit) -->
+            <div id="submitting-indicator" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center gap-2.5 text-xs font-semibold text-emerald-900">
+              <i class="ph-bold ph-spinner animate-spin text-lg text-emerald-700"></i>
+              <span>Sedang mengirim ke server, tombol dinonaktifkan agar tidak terjadi pengiriman ganda...</span>
+            </div>
+
+            <!-- Dua Tombol Berjarak Aman (ACC04 & RES01) -->
+            <div id="confirm-modal-actions" class="grid grid-cols-2 gap-3 pt-1">
+              <button type="button" onclick="closeConfirmSubmitModal()" class="min-h-[46px] px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 font-bold text-xs transition cursor-pointer">
+                Batal / Periksa Lagi
+              </button>
+              <button type="button" id="btn-final-submit" onclick="executeFinalSubmit()" class="btn-primary-edlink min-h-[46px] px-3 py-2.5 rounded-xl bg-[#007A3D] hover:bg-[#006231] text-white font-bold text-xs shadow-sm transition cursor-pointer">
+                Kirim Sekarang
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- LAYAR 6 (S5): STATUS TERKIRIM / CONFIRMED (RES03, RES06, ACC02) -->
+        <!-- =============================================================== -->
+        <section id="screen-s5" class="hidden flex-1 flex flex-col overflow-hidden">
+          <header class="bg-white px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <button type="button" aria-label="Kembali" onclick="showToast('Tugas sudah dikumpulkan. Gunakan panel kontrol untuk simulasi tenggat atau reset.')" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-800">
+                <i class="ph-bold ph-arrow-left text-lg"></i>
+              </button>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900">Tentang Tugas</h2>
+                <p class="text-[11px] text-sec-aaa">Bukti Pengumpulan Tugas</p>
+              </div>
+            </div>
+            <!-- Badge Status Hijau + Ikon Centang + Teks Jelas (ACC02) -->
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
+              <i class="ph-fill ph-check-circle text-emerald-700"></i> Sudah Dikumpulkan
+            </span>
+          </header>
+
+          <div class="flex-1 overflow-y-auto phone-scroll p-4 space-y-3.5">
+            <!-- Kartu Bukti Pengiriman Resmi (RES03) -->
+            <div class="card-surface bg-emerald-50 border-2 border-emerald-600 rounded-2xl p-4 space-y-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center shrink-0">
+                  <i class="ph-bold ph-check text-xl"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-extrabold text-emerald-950">Tugas Berhasil Dikumpulkan</h3>
+                  <p class="text-[11px] font-medium text-emerald-900">Tercatat resmi pada server SEVIMA EdLink</p>
+                </div>
+              </div>
+
+              <!-- Detail Bukti Waktu Server & ID Pengiriman (RES03) -->
+              <div class="bg-white rounded-xl p-3 border border-emerald-200 space-y-2 text-xs">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-1.5">
+                  <span class="text-sec-aaa font-medium">Waktu Server:</span>
+                  <span class="font-bold text-slate-900">Kamis, 19 Nov 2026, 10:12 WIB</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-100 pb-1.5">
+                  <span class="text-sec-aaa font-medium">ID Pengiriman:</span>
+                  <span class="font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">#EDL-9K2026-4F2A</span>
+                </div>
+                <div class="flex items-center gap-2.5 pt-0.5">
+                  <i class="ph-fill ph-file-pdf text-rose-600 text-xl shrink-0"></i>
+                  <div class="min-w-0 flex-1">
+                    <p id="s5-submitted-filename" class="font-bold text-slate-900 truncate">Tugas3_Prototype_Kelompok9.pdf</p>
+                    <p id="s5-submitted-size" class="text-[11px] text-sec-aaa">1.8 MB • Terverifikasi</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kotak Info Netral Batas Perubahan (RES05 & RES06) -->
+            <div id="s5-change-policy-box" class="card-surface bg-sky-50 border border-sky-200 rounded-xl p-3 flex items-start gap-2.5">
+              <i id="s5-policy-icon" class="ph-fill ph-info text-sky-700 text-lg shrink-0 mt-0.5"></i>
+              <p id="s5-policy-text" class="text-xs text-slate-800 leading-relaxed">
+                Jawaban masih dapat diganti atau dihapus sampai <strong>Kamis, 19 Nov 2026 pukul 10.30 WIB</strong>.
+              </p>
+            </div>
+
+            <!-- Ringkasan Detail Tugas -->
+            <div class="card-surface bg-white rounded-2xl p-4 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-900">Assignment 3 - Interactive Prototyping</span>
+                <span class="text-[11px] font-semibold text-purple-900 bg-purple-100 px-2 py-0.5 rounded-full">Kelompok 9</span>
+              </div>
+              <p class="text-xs text-sec-aaa">
+                Anggota: Rafi Bagas Naufally (092024090195) &amp; Panji Widagdo (092024090212)
+              </p>
+            </div>
+
+            <!-- Tombol Aksi Berlabel Jelas (ACC04, RES06, F-05) -->
+            <div id="s5-active-actions" class="grid grid-cols-2 gap-3 pt-1">
+              <button type="button" onclick="navigateTo('s2')" class="min-h-[48px] px-3 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-900 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer">
+                <i class="ph-bold ph-arrows-left-right text-emerald-700"></i>
+                <span>Ganti Berkas</span>
+              </button>
+              <button type="button" onclick="openDeleteConfirmModal()" class="min-h-[48px] px-3 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-900 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer">
+                <i class="ph-bold ph-trash text-rose-700"></i>
+                <span>Hapus Jawaban</span>
+              </button>
+            </div>
+
+            <!-- State Terkunci Setelah Tenggat Berakhir (RES06 & F-05) -->
+            <div id="s5-locked-actions" class="hidden space-y-2 pt-1">
+              <div class="grid grid-cols-2 gap-3 opacity-60">
+                <button type="button" disabled class="min-h-[48px] px-3 py-2.5 rounded-xl bg-slate-200 border border-slate-300 text-slate-600 font-bold text-xs flex items-center justify-center gap-1.5 cursor-not-allowed">
+                  <i class="ph-bold ph-lock"></i>
+                  <span>Ganti Berkas</span>
+                </button>
+                <button type="button" disabled class="min-h-[48px] px-3 py-2.5 rounded-xl bg-slate-200 border border-slate-300 text-slate-600 font-bold text-xs flex items-center justify-center gap-1.5 cursor-not-allowed">
+                  <i class="ph-bold ph-lock"></i>
+                  <span>Hapus Jawaban</span>
+                </button>
+              </div>
+              <p class="text-[11px] font-semibold text-center text-sec-aaa">
+                Waktu pengumpulan telah berakhir — Jawaban dikunci otomatis.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- MODAL KONFIRMASI HAPUS JAWABAN (REKOMENDASI RES06 & ACC04)      -->
+        <!-- =============================================================== -->
+        <div id="modal-confirm-delete" class="hidden absolute inset-0 z-40 bg-slate-900/60 backdrop-blur-[1px] p-4 flex items-center justify-center">
+          <div role="dialog" aria-modal="true" class="bg-white rounded-2xl p-5 w-full space-y-4 shadow-2xl animate-fade-in">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                <i class="ph-bold ph-warning text-xl"></i>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Hapus Jawaban?</h3>
+                <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+                  Jawaban ini akan dihapus dari pengumpulan. Lanjutkan?
+                </p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <button type="button" onclick="closeDeleteConfirmModal()" class="min-h-[44px] px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold text-xs cursor-pointer">
+                Batal
+              </button>
+              <button type="button" onclick="executeDeleteSubmission()" class="min-h-[44px] px-3 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs cursor-pointer">
+                Ya, Hapus Jawaban
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- TOAST NOTIFICATION DALAM LAYAR PONSEL                           -->
+        <!-- =============================================================== -->
+        <div id="phone-toast" class="hidden absolute bottom-5 left-4 right-4 z-50 bg-slate-900 text-white text-xs font-medium px-3.5 py-2.5 rounded-xl shadow-lg flex items-center gap-2">
+          <i class="ph-fill ph-info text-emerald-400 text-base shrink-0"></i>
+          <span id="phone-toast-text">Pesan informasi</span>
+        </div>
+
+        <!-- Home Indicator Bar -->
+        <div class="h-5 bg-white flex items-center justify-center shrink-0">
+          <div class="w-28 h-1 bg-slate-300 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- LOGIKA INTERAKSI & STATE MANAGEMENT PROTOTYPE                         -->
+  <!-- ===================================================================== -->
+  <script>
+    // State utama aplikasi prototype
+    let currentScreen = 's1';
+    let selectedFile = {
+      name: 'Tugas3_Prototype_Kelompok9.pdf',
+      size: '1.8 MB',
+      type: 'PDF'
+    };
+    let hasLocalDraft = false;
+    let isDeadlinePassed = false;
+    let uploadTimer = null;
+
+    // Peta penjelasan Audit Tugas 2 untuk ditampilkan dinamis di panel kiri
+    const auditTraceabilityMap = {
+      s1: [
+        { code: 'ACC01', text: 'Kontras teks sekunder diubah menjadi #595555 (rasio 7.35:1, lulus WCAG AAA).' },
+        { code: 'RES05', text: 'Banner tekanan sosial ("2 orang terakhir") diganti informasi netral.' },
+        { code: 'ACC04', text: 'Tombol utama memiliki target sentuh minimal 48x48px agar ramah satu tangan.' }
+      ],
+      s2: [
+        { code: 'INC03', text: 'Keterangan eksplisit di bawah pilihan Lampirkan File vs Teks Editor.' },
+        { code: 'RES02', text: 'Transparansi akses Google Drive: hanya membaca berkas yang dipilih.' },
+        { code: 'RES04', text: 'Fitur Uji Akses Tautan tersedia pada opsi Teks Editor.' }
+      ],
+      s3: [
+        { code: 'ACC03', text: 'Teks "Mohon tunggu" diganti keterangan spesifik & progress bar persentase.' },
+        { code: 'F-05', text: 'Tersedia tombol "Batalkan Unggahan" untuk mengembalikan kendali pengguna.' }
+      ],
+      s6: [
+        { code: 'INC01', text: 'State gagal dengan penyimpanan draf lokal otomatis & tombol "Coba Lagi".' },
+        { code: 'ACC02', text: 'Peringatan gagal menggunakan ikon + teks tegas, tidak mengandalkan warna merah saja.' }
+      ],
+      s4: [
+        { code: 'IR2 / F-05', text: 'Pratinjau isi dokumen sebelum kirim & tombol "Ganti Berkas" yang terpisah jaraknya.' },
+        { code: 'RES01', text: 'Dialog konfirmasi eksplisit menjelaskan aturan penggantian sebelum tenggat.' }
+      ],
+      s5: [
+        { code: 'RES03', text: 'Bukti resmi berisi waktu server (WIB) dan ID Pengiriman unik (#EDL-9K2026-4F2A).' },
+        { code: 'RES06', text: 'Keterangan batas ganti berkas jelas, tombol berlabel teks, dan terkunci otomatis saat tenggat habis.' }
+      ]
+    };
+
+    // Navigasi antar layar utama
+    function navigateTo(screenId) {
+      if (uploadTimer) {
+        clearInterval(uploadTimer);
+        uploadTimer = null;
+      }
+
+      const screens = ['s1', 's2', 's3', 's4', 's5', 's6'];
+      screens.forEach(id => {
+        const el = document.getElementById(`screen-${id}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) {
+        target.classList.remove('hidden');
+        currentScreen = screenId;
+      }
+
+      updateSidePanel(screenId);
+    }
+
+    // Memperbarui indikator langkah & daftar kode audit di panel kiri
+    function updateSidePanel(screenId) {
+      const badge = document.getElementById('step-badge');
+      const labels = {
+        s1: 'S1: Tentang Tugas',
+        s2: 'S2: Google Drive',
+        s3: 'S3: Mengunggah (60%)',
+        s6: 'S6: Error & Recovery',
+        s4: 'S4: Pratinjau & Kirim',
+        s5: 'S5: Terkirim (Confirmed)'
+      };
+      badge.textContent = labels[screenId] || screenId.toUpperCase();
+
+      // Update progress bar 5 tahap
+      const stepOrder = { s1: 1, s2: 2, s3: 3, s6: 3, s4: 4, s5: 5 };
+      const activeIdx = stepOrder[screenId] || 1;
+      for (let i = 1; i <= 5; i++) {
+        const bar = document.getElementById(`prog-s${i}`);
+        if (i <= activeIdx) {
+          bar.classList.remove('bg-slate-200', 'bg-rose-500');
+          bar.classList.add(screenId === 's6' && i === 3 ? 'bg-rose-500' : 'bg-emerald-600');
+        } else {
+          bar.classList.remove('bg-emerald-600', 'bg-rose-500');
+          bar.classList.add('bg-slate-200');
+        }
+      }
+
+      // Render catatan perbaikan audit
+      const listEl = document.getElementById('audit-notes-list');
+      const notes = auditTraceabilityMap[screenId] || [];
+      listEl.innerHTML = notes.map(item => `
+        <li class="flex items-start gap-2">
+          <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold text-[10px] shrink-0 mt-0.5">
+            ${item.code}
+          </span>
+          <span>${item.text}</span>
+        </li>
+      `).join('');
+    }
+
+    // Membuka & menutup Bottom Sheet metode unggah (S1 -> S2)
+    function openUploadMethodSheet() {
+      if (isDeadlinePassed) {
+        showToast('Batas pengumpulan telah berakhir. Jawaban tidak dapat ditambahkan.');
+        return;
+      }
+      document.getElementById('sheet-upload-method').classList.remove('hidden');
+    }
+
+    function closeUploadMethodSheet() {
+      document.getElementById('sheet-upload-method').classList.add('hidden');
+    }
+
+    function goToGoogleDrive() {
+      closeUploadMethodSheet();
+      navigateTo('s2');
+    }
+
+    // Modal Uji Tautan (RES04)
+    function openTextEditorLinkCheck() {
+      closeUploadMethodSheet();
+      document.getElementById('link-check-result').classList.add('hidden');
+      document.getElementById('modal-link-checker').classList.remove('hidden');
+    }
+
+    function closeTextEditorLinkCheck() {
+      document.getElementById('modal-link-checker').classList.add('hidden');
+    }
+
+    function runLinkAccessTest() {
+      const val = document.getElementById('input-drive-link').value.trim();
+      const resBox = document.getElementById('link-check-result');
+      resBox.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'bg-rose-50', 'text-rose-900');
+
+      if (!val || val.includes('restricted')) {
+        resBox.classList.add('bg-rose-50', 'text-rose-900', 'border', 'border-rose-200');
+        resBox.innerHTML = '<strong>Gagal:</strong> Tautan tidak dapat dibuka publik. Ubah izin berbagi menjadi <em>Anyone with the link</em>.';
+      } else {
+        resBox.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+        resBox.innerHTML = '<strong>Tautan Valid:</strong> Dapat diakses oleh dosen tanpa login.';
+      }
+    }
+
+    // Memilih file dari Google Drive -> Masuk Layar 4 (S3 Uploading)
+    function selectDriveFile(name, size, type) {
+      selectedFile = { name, size, type };
+      startUploadProcess(selectedFile);
+    }
+
+    function startUploadProcess(file) {
+      document.getElementById('s3-filename').textContent = file.name;
+      const bar = document.getElementById('s3-progress-bar');
+      const statusText = document.getElementById('s3-status-text');
+      const percentLabel = document.getElementById('s3-percent-label');
+
+      let progress = 35;
+      bar.style.width = `${progress}%`;
+      statusText.textContent = `Mengunggah berkas dari Google Drive... ${progress}%`;
+      percentLabel.textContent = `${progress}%`;
+
+      navigateTo('s3');
+
+      // Simulasi progres berjalan menuju 60% lalu selesai jika tidak diputus
+      uploadTimer = setInterval(() => {
+        if (progress < 60) {
+          progress += 5;
+          bar.style.width = `${progress}%`;
+          statusText.textContent = `Mengunggah berkas dari Google Drive... ${progress}%`;
+          percentLabel.textContent = `${progress}%`;
+        } else if (progress < 100) {
+          progress += 10;
+          bar.style.width = `${progress}%`;
+          statusText.textContent = `Memvalidasi pratinjau dokumen... ${progress}%`;
+          percentLabel.textContent = `${progress}%`;
+        } else {
+          clearInterval(uploadTimer);
+          uploadTimer = null;
+          completeUploadSuccess();
+        }
+      }, 650);
+    }
+
+    function completeUploadSuccess() {
+      if (uploadTimer) {
+        clearInterval(uploadTimer);
+        uploadTimer = null;
+      }
+      hasLocalDraft = false;
+      document.getElementById('s1-draft-box').classList.add('hidden');
+      document.getElementById('status-wifi-icon').className = 'ph-bold ph-wifi-high text-slate-800';
+
+      // Sinkronkan metadata file ke Layar Preview (S4)
+      document.getElementById('s4-filename').textContent = selectedFile.name;
+      document.getElementById('s4-filemeta').textContent = `${selectedFile.size} • Sumber: Google Drive`;
+
+      navigateTo('s4');
+    }
+
+    function cancelUpload() {
+      if (uploadTimer) {
+        clearInterval(uploadTimer);
+        uploadTimer = null;
+      }
+      showToast('Unggahan dibatalkan. Silakan pilih berkas kembali.');
+      navigateTo('s2');
+    }
+
+    // Simulasi Koneksi Terputus (INC01 & RES03)
+    function triggerNetworkErrorSimulation() {
+      if (uploadTimer) {
+        clearInterval(uploadTimer);
+        uploadTimer = null;
+      }
+      closeUploadMethodSheet();
+      closeConfirmSubmitModal();
+
+      hasLocalDraft = true;
+      document.getElementById('status-wifi-icon').className = 'ph-bold ph-wifi-slash text-rose-600';
+
+      // Update nama file di S6 dan S1 draft
+      document.getElementById('s6-filename').textContent = selectedFile.name;
+      document.getElementById('s6-file-card-name').textContent = selectedFile.name;
+      document.getElementById('s6-file-card-size').textContent = `${selectedFile.size} • Draf Lokal Siap Dikirim`;
+
+      document.getElementById('s1-draft-box').classList.remove('hidden');
+      document.getElementById('s1-draft-filename').textContent = `${selectedFile.name} (${selectedFile.size})`;
+
+      navigateTo('s6');
+    }
+
+    function retryUploadFromError() {
+      document.getElementById('status-wifi-icon').className = 'ph-bold ph-wifi-high text-slate-800';
+      showToast('Koneksi pulih. Melanjutkan dari draf lokal...');
+      startUploadProcess(selectedFile);
+    }
+
+    // Modal Konfirmasi Pengiriman Final (RES01)
+    function openConfirmSubmitModal() {
+      document.getElementById('confirm-file-summary').textContent = `Berkas: ${selectedFile.name} (${selectedFile.size})`;
+      document.getElementById('submitting-indicator').classList.add('hidden');
+      document.getElementById('confirm-modal-actions').classList.remove('hidden');
+      document.getElementById('modal-confirm-submit').classList.remove('hidden');
+    }
+
+    function closeConfirmSubmitModal() {
+      document.getElementById('modal-confirm-submit').classList.add('hidden');
+    }
+
+    function executeFinalSubmit() {
+      // Nonaktifkan tombol dan tampilkan indikator anti-double submit (RES03)
+      document.getElementById('confirm-modal-actions').classList.add('hidden');
+      document.getElementById('submitting-indicator').classList.remove('hidden');
+
+      setTimeout(() => {
+        closeConfirmSubmitModal();
+        document.getElementById('s5-submitted-filename').textContent = selectedFile.name;
+        document.getElementById('s5-submitted-size').textContent = `${selectedFile.size} • Terverifikasi`;
+        applyDeadlineStateUI();
+        navigateTo('s5');
+      }, 1100);
+    }
+
+    // Konfirmasi Hapus Jawaban (RES06)
+    function openDeleteConfirmModal() {
+      document.getElementById('modal-confirm-delete').classList.remove('hidden');
+    }
+
+    function closeDeleteConfirmModal() {
+      document.getElementById('modal-confirm-delete').classList.add('hidden');
+    }
+
+    function executeDeleteSubmission() {
+      closeDeleteConfirmModal();
+      showToast('Jawaban berhasil dihapus. Anda dapat mengunggah berkas baru sebelum tenggat.');
+      navigateTo('s1');
+    }
+
+    // Simulasi Waktu Tenggat Berakhir (RES06 & F-05)
+    function toggleDeadlineSimulation() {
+      isDeadlinePassed = !isDeadlinePassed;
+      const btnText = document.getElementById('text-sim-deadline');
+      btnText.textContent = isDeadlinePassed
+        ? 'Kembalikan Waktu Sebelum Tenggat'
+        : 'Simulasi Waktu Tenggat Berakhir (RES06)';
+
+      applyDeadlineStateUI();
+
+      // Jika sedang di layar lain selain S5 dan tenggat disimulasikan habis, arahkan ke S5 untuk memperlihatkan state terkunci
+      if (isDeadlinePassed && currentScreen !== 's5') {
+        document.getElementById('s5-submitted-filename').textContent = selectedFile.name;
+        document.getElementById('s5-submitted-size').textContent = `${selectedFile.size} • Terverifikasi`;
+        navigateTo('s5');
+      }
+    }
+
+    function applyDeadlineStateUI() {
+      const s5Active = document.getElementById('s5-active-actions');
+      const s5Locked = document.getElementById('s5-locked-actions');
+      const policyBox = document.getElementById('s5-change-policy-box');
+      const policyText = document.getElementById('s5-policy-text');
+      const policyIcon = document.getElementById('s5-policy-icon');
+
+      if (isDeadlinePassed) {
+        s5Active.classList.add('hidden');
+        s5Locked.classList.remove('hidden');
+        policyBox.className = 'card-surface bg-amber-50 border border-amber-300 rounded-xl p-3 flex items-start gap-2.5';
+        policyIcon.className = 'ph-fill ph-lock-key text-amber-700 text-lg shrink-0 mt-0.5';
+        policyText.innerHTML = 'Batas pengumpulan <strong>Kamis, 19 Nov 2026 pukul 10.30 WIB</strong> telah berakhir. Jawaban dikunci secara permanen.';
+      } else {
+        s5Active.classList.remove('hidden');
+        s5Locked.classList.add('hidden');
+        policyBox.className = 'card-surface bg-sky-50 border border-sky-200 rounded-xl p-3 flex items-start gap-2.5';
+        policyIcon.className = 'ph-fill ph-info text-sky-700 text-lg shrink-0 mt-0.5';
+        policyText.innerHTML = 'Jawaban masih dapat diganti atau dihapus sampai <strong>Kamis, 19 Nov 2026 pukul 10.30 WIB</strong>.';
+      }
+    }
+
+    // Mode Kontras Tinggi (INC02)
+    function toggleHighContrast(enabled) {
+      const wrapper = document.getElementById('phone-wrapper');
+      if (enabled) {
+        wrapper.classList.add('high-contrast-mode');
+        showToast('Mode Kontras Tinggi aktif (INC02).');
+      } else {
+        wrapper.classList.remove('high-contrast-mode');
+        showToast('Mode tampilan standar aktif.');
+      }
+    }
+
+    // Helper Toast di dalam layar ponsel
+    let toastTimeout = null;
+    function showToast(msg) {
+      const toast = document.getElementById('phone-toast');
+      const toastText = document.getElementById('phone-toast-text');
+      toastText.textContent = msg;
+      toast.classList.remove('hidden');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3200);
+    }
+
+    // Reset keseluruhan prototype ke kondisi awal (S1)
+    function resetPrototype() {
+      isDeadlinePassed = false;
+      hasLocalDraft = false;
+      selectedFile = {
+        name: 'Tugas3_Prototype_Kelompok9.pdf',
+        size: '1.8 MB',
+        type: 'PDF'
+      };
+      document.getElementById('text-sim-deadline').textContent = 'Simulasi Waktu Tenggat Berakhir (RES06)';
+      document.getElementById('s1-draft-box').classList.add('hidden');
+      document.getElementById('status-wifi-icon').className = 'ph-bold ph-wifi-high text-slate-800';
+      closeUploadMethodSheet();
+      closeTextEditorLinkCheck();
+      closeConfirmSubmitModal();
+      closeDeleteConfirmModal();
+      applyDeadlineStateUI();
+      navigateTo('s1');
+      showToast('Prototype direset ke tampilan awal (S1).');
+    }
+
+    // Inisialisasi saat halaman dimuat
+    window.onload = function () {
+      updateSidePanel('s1');
+    };
+  </script>
+</body>
+</html>
