@@ -1,106 +1,107 @@
-# SEVIMA EdLink Mobile — Interactive Clickable Prototype
-> **Assignment 3 — Interaksi Manusia dan Komputer (SIN63122)**  
-> **Program Studi Sistem Informasi / Informatika — Jakarta Global University (JGU)**
+# Laporan Prototipe Interaktif SEVIMA EdLink
+
+Dokumentasi ini disusun untuk memenuhi **Assignment 3: Interactive Prototyping** pada mata kuliah **Interaksi Manusia dan Komputer (Kode Mata Kuliah: SIN63122)**, Program Studi Sistem Informasi / Informatika, Fakultas Teknologi Komunikasi dan Informatika, **Jakarta Global University**.
 
 ---
 
-## 👥 Identitas Pengembang (Kelompok 9)
+## 1. Identitas Penyusun
 
-| Nama Anggota | NIM | Peran |
-| :--- | :--- | :--- |
-| **Rafi Bagas Naufally** | `092024090195` | UI/UX Designer & Frontend Prototype Engineer |
-| **Panji Widagdo** | `092024090212` | HCI Researcher & Accessibility Auditor |
+Penyusunan prototipe interaktif dan dokumentasi evaluasi ini dilakukan oleh **Kelompok 9**:
 
----
-
-## 📱 Ringkasan Proyek
-
-Repositori ini berisi **Interactive Clickable Prototype berbasis web** (single-file `index.html`) yang menyimulasikan redesain alur pengumpulan tugas pada aplikasi mobile **SEVIMA EdLink**, dengan fokus utama integrasi berkas dari **Google Drive**.
-
-Prototipe ini dirancang sebagai artefak implementasi solusi dari temuan evaluasi heuristik dan audit aksesibilitas pada **Tugas 2 IMK**, menghadirkan antarmuka mobile berbingkai ponsel realistis dengan panel kontrol demonstrasi di sisi kiri untuk memudahkan pengujian akademik dan perekaman video demonstrasi.
+| No | Nama Mahasiswa | Nomor Induk Mahasiswa (NIM) | Peran dan Tanggung Jawab |
+| :---: | :--- | :---: | :--- |
+| 1 | Rafi Bagas Naufally | 092024090195 | Perancangan Antarmuka Pengguna dan Rekayasa Kode Prototipe Frontend |
+| 2 | Panji Widagdo | 092024090212 | Analisis Evaluasi Heuristik, Pengujian Aksesibilitas, dan Traceability Audit |
 
 ---
 
-## 🗺️ Alur Layar & State Interaktif (S1 s/d S6)
+## 2. Deskripsi dan Tujuan Proyek
 
-| State | Nama Layar | Deskripsi Interaksi Utama |
+Proyek ini menghadirkan sebuah prototipe interaktif berbasis web (single-file HTML) yang menyimulasikan perbaikan alur pengumpulan tugas pada aplikasi mobile SEVIMA EdLink, khususnya pengumpulan berkas melalui integrasi Google Drive. 
+
+Prototipe ini dirancang berdasarkan hasil audit evaluasi heuristik dan pengujian aksesibilitas yang telah disusun pada Tugas 2. Tujuannya adalah memvalidasi efektivitas solusi desain antarmuka dalam mengatasi kendala transparansi status, pencegahan kesalahan pemilihan berkas, kejelasan pesan kegagalan jaringan, serta kepatuhan kontras visual berdasarkan standar Web Content Accessibility Guidelines (WCAG 2.2 Level AAA).
+
+---
+
+## 3. Struktur Layar dan State Interaktif
+
+Alur antarmuka prototipe mencakup enam state layar utama yang terhubung secara interaktif:
+
+### Layar S1: Tentang Tugas (Assignment Detail)
+Menampilkan informasi rincian tugas kuliah (*Assignment 3 - Interactive Prototyping*, Kelompok 9, tenggat waktu pengumpulan 19 November 2026 pukul 10.30 WIB). Ketika pengguna menekan tombol *Tambahkan Jawaban (Max 10 MB)*, sistem menampilkan lembar bawah (*bottom sheet*) yang secara eksplisit membedakan jalur pengumpulan berkas fisik (*Lampirkan File: PDF, DOCX, Gambar batas 10 MB*) dan tautan daring (*Teks Editor*).
+
+### Layar S2: Media Library (Google Drive Integration)
+Menampilkan daftar berkas mahasiswa pada penyimpanan Google Drive. Layar ini memuat pernyataan privasi eksplisit (*"EdLink hanya membaca berkas yang Anda pilih"*), daftar berkas dummy, dan berkas target `Tugas3_Prototype_Kelompok9.pdf (1.8 MB)` yang dapat dipilih langsung oleh pengguna.
+
+### Layar S3: Proses Upload (Dynamic Progress)
+Menampilkan visualisasi proses pengunggahan berkas secara bertahap dan dinamis (*"Mengunggah berkas... 60%"*) menggantikan teks statis. Pada layar ini disediakan tombol kendali simulasi untuk menguji skenario sukses (*Lanjut Sukses*) atau skenario gangguan koneksi (*Simulasi Koneksi Terputus*).
+
+### Layar S6: Error and Recovery State
+State penanganan kesalahan yang aktif ketika proses pengunggahan terputus. Sistem memberikan umpan balik eksplisit: *"Gagal dikirim: koneksi terputus. Berkas tersimpan otomatis sebagai draf lokal."* Pengguna dapat memilih tombol *Coba Lagi* untuk langsung melanjutkan proses dari draf yang tersimpan tanpa perlu memilih ulang berkas dari awal.
+
+### Layar S4: Preview and Submit
+Menampilkan pratinjau lembar pertama dokumen PDF sebelum dikirim agar mahasiswa dapat memverifikasi isi berkas. Layar ini dilengkapi tombol *Ganti Berkas* dengan target sentuh aman (minimal 44 x 44 piksel), tombol utama *Kirim Tugas*, serta *Dialog Konfirmasi Final* yang menampilkan ringkasan berkas, ukuran, dan jaminan bahwa berkas masih dapat diubah sebelum batas waktu.
+
+### Layar S5: Submission Confirmed
+Tanda terima digital resmi yang menyatakan tugas berhasil dikirim sebelum tenggat (*"Sudah Dikumpulkan pada 19 Nov 2026 pukul 10.12 WIB"*), dilengkapi nomor pengenal unik (*ID Pengiriman: #EDL-4F2A9C*), tombol *Lihat Berkas*, tombol *Ganti Berkas*, dan tombol *Hapus Jawaban* yang disertai dialog konfirmasi pembatalan.
+
+---
+
+## 4. Matriks Pemenuhan Rekomendasi Audit Tugas 2
+
+Setiap elemen antarmuka pada prototipe ini terhubung langsung dengan kode temuan audit pada Tugas 2:
+
+| Kode Temuan | Parameter Evaluasi | Implementasi Solusi Desain pada Prototipe |
 | :---: | :--- | :--- |
-| **S1** | **Tentang Tugas (Assignment Detail)** | Menampilkan rincian tugas kuliah (*Assignment 3 - Interactive Prototyping*, Kelompok 9, tenggat waktu 19 Nov 2026 pukul 10.30 WIB). Saat tombol *"Tambahkan Jawaban"* diklik, muncul modal *Bottom Sheet* yang membedakan secara eksplisit jalur pengunggahan berkas fisik (*PDF/DOCX/Gambar maks 10 MB*) vs penyematan tautan URL teks editor. |
-| **S2** | **Media Library (Google Drive)** | Menampilkan integrasi penyimpanan awan Google Drive yang dilengkapi pesan transparansi privasi (*"EdLink hanya membaca berkas yang Anda pilih"*), daftar berkas dummy mahasiswa, dan item sasaran yang dapat dipilih: `Tugas3_Prototype_Kelompok9.pdf (1.8 MB)`. |
-| **S3** | **Proses Upload (Dynamic Progress)** | Menampilkan visualisasi pengunggahan berkas secara real-time dengan persentase bertahap (*"Mengunggah berkas... 60%"*) menggantikan teks statis. Dilengkapi tombol simulasi percabangan: *"Lanjut Sukses"* (ke S4) atau *"Simulasi Terputus"* (ke S6). |
-| **S4** | **Preview & Submit** | Menampilkan pratinjau visual halaman 1 dokumen PDF laporan sebelum dikirim agar mahasiswa yakin berkas tidak tertukar, tombol *"Ganti Berkas"* dengan target sentuh ramah jari (≥ 44×44 px), tombol *"Kirim Tugas"*, serta **Dialog Konfirmasi Final** yang merinci nama berkas, ukuran, dan kebijakan pengubahan sebelum batas waktu. |
-| **S5** | **Submission Confirmed** | Tanda terima pengiriman terverifikasi dengan badge hijau *"Sudah Dikumpulkan pada 19 Nov 2026 pukul 10.12 WIB"*, nomor ID Pengiriman unik (`#EDL-4F2A9C`), opsi *"Lihat Berkas"*, *"Ganti Berkas"*, serta tombol *"Hapus Jawaban"* yang disertai dialog konfirmasi pembatalan. |
-| **S6** | **Error & Recovery State** | State pemulihan jika terjadi kegagalan jaringan internet saat upload. Menampilkan pesan kesalahan eksplisit: *"Gagal dikirim: koneksi terputus. Berkas tersimpan otomatis sebagai draf lokal"* dan tombol *"Coba Lagi"* yang memulihkan alur pengiriman tanpa perlu memilih berkas dari awal. |
+| **ACC01** | Rasio Kontras Warna Teks | Teks sekunder menggunakan kode warna `#595555` pada latar belakang putih, menghasilkan rasio kontras 7.35:1 yang melampaui ambang batas minimum WCAG 2.2 Level AAA (7:1). |
+| **ACC02** | Ketepatan Umpan Balik Waktu | Tanda terima pada Layar S5 menyajikan waktu pengiriman secara presisi (tanggal, jam, dan menit pengumpulan) sehingga mahasiswa memiliki bukti kepatuhan tenggat waktu. |
+| **ACC03** | Indikator Status Dinamis | Layar S3 menyajikan persentase kemajuan unggah secara numerik dan baris progresif aktif, menggantikan teks statis "Mohon tunggu". |
+| **ACC04** | Dimensi Target Sentuh | Tombol aksi mikro (seperti tombol *Ganti Berkas* dan tombol navigasi) dirancang dengan area sentuh minimal 44 x 44 piksel guna meminimalkan kesalahan sentuh pada perangkat layar sentuh. |
+| **INC01** | Kejelasan Pesan Kesalahan | Layar S6 menyajikan pesan kegagalan yang konstruktif dan menginformasikan bahwa berkas telah diamankan sebagai draf lokal. |
+| **INC02** | Adaptasi Pencahayaan Luar Ruangan | Prototipe menyediakan mode kontras tinggi (*High Contrast Mode*) untuk menjamin keterbacaan antarmuka di bawah sinar matahari langsung. |
+| **INC03** | Pemisahan Jalur Masukan | Pembeda masukan pada Layar S1 memperjelas batasan kapasitas unggah file fisik (maksimal 10 MB) dibandingkan opsi tautan URL teks editor. |
+| **RES01** | Pencegahan Kesalahan Berkas | Layar S4 menyajikan visualisasi pratinjau dokumen PDF dan dialog konfirmasi ganda sebelum eksekusi pengiriman final. |
+| **RES02** | Transparansi Hak Akses Data | Menampilkan pernyataan privasi bahwa EdLink hanya memiliki hak baca terhadap dokumen yang dipilih secara eksplisit oleh pengguna. |
+| **RES03** | Validitas Bukti Transaksi | Menghasilkan kode identifikasi pengiriman unik (#EDL-4F2A9C) yang dapat disalin sebagai bukti sah penyerahan tugas akademik. |
+| **RES04** | Efisiensi Alur Pemulihan | Mekanisme *Coba Lagi* pada Layar S6 memanfaatkan data draf lokal sehingga mahasiswa tidak perlu mengulang tahapan pemilihan berkas dari Google Drive. |
+| **RES05** | Aksesibilitas Pembatalan Tindakan | Menyediakan opsi pembatalan yang jelas di setiap titik transisi (pembatalan unggah, pembatalan pengiriman, dan penarikan tugas). |
+| **RES06** | Penegakan Batas Waktu Otomatis | Sistem mengunci tombol *Ganti Berkas* dan *Hapus Jawaban* pada Layar S5 secara otomatis apabila simulasi tenggat waktu berakhir diaktifkan. |
+| **F-05** | Penerapan Hukum Fitts | Tombol *Batal / Ganti Berkas* dan tombol *Kirim Sekarang* pada dialog konfirmasi dipisahkan dengan jarak yang cukup untuk mencegah ketidaksengajaan klik. |
 
 ---
 
-## 🔍 Matriks Traceability Temuan Audit Tugas 2
+## 5. Petunjuk Penggunaan Prototipe
 
-Prototipe ini memvalidasi seluruh rekomendasi perbaikan dari temuan Tugas 2 IMK:
-
-| Kode Temuan | Aspek Evaluasi | Implementasi Solusi pada Prototipe |
-| :---: | :--- | :--- |
-| **ACC01** | Aksesibilitas Warna & Kontras | Teks sekunder menggunakan warna `#595555` pada latar putih, menghasilkan rasio kontras **7.35:1** yang lolos kualifikasi **WCAG 2.2 Level AAA**. |
-| **ACC02** | Kejelasan Bukti Penyerahan | Layar S5 mencantumkan tanggal, jam, dan menit pengumpulan secara eksplisit (*19 Nov 2026 pukul 10.12 WIB*) bukan sekadar label "Terkirim". |
-| **ACC03** | Status Pengunggahan Real-Time | Layar S3 menggunakan progress bar dinamis dengan persentase aktif menggantikan label teks statis *"Mohon tunggu"*. |
-| **ACC04** | Aksesibilitas Target Sentuh | Tombol navigasi dan aksi mikro (seperti tombol *Ganti Berkas*) memenuhi standar ukuran target sentuh interaktif minimum (≥ 24×24 px hingga 44×44 px). |
-| **INC01** | Penanganan Kesalahan (Error Handling) | Pesan kegagalan koneksi di Layar S6 bersifat konstruktif dan informatif, serta menjamin berkas tersimpan aman sebagai draf offline. |
-| **INC02** | Keterbacaan Luar Ruangan | Tersedia toggle *"Mode Kontras Tinggi"* pada panel simulasi untuk menguji keterbacaan antarmuka di bawah terik sinar matahari. |
-| **INC03** | Kejelasan Jalur Input Berkas | Modal pemilihan metode pengumpulan memisahkan secara tegas antara unggah berkas fisik (kapasitas 10 MB) dan tautan teks editor URL. |
-| **RES01** | Pencegahan Kesalahan Berkas | Lembar pratinjau visual PDF pada S4 dan dialog konfirmasi sebelum submit memastikan pengguna tidak salah memilih file. |
-| **RES02** | Privasi & Transparansi Izin | Menampilkan deklarasi privasi eksplisit saat menghubungkan Google Drive: *"EdLink hanya membaca berkas yang Anda pilih"*. |
-| **RES03** | Bukti Transaksi Unik | Memberikan kode referensi unik (`#EDL-4F2A9C`) sebagai tanda bukti sah pengumpulan tugas di server kampus. |
-| **RES04** | Pemulihan Tanpa Redundansi | Fitur *Coba Lagi* dari draf lokal mencegah mahasiswa mengulang alur login dan pencarian file dari awal. |
-| **RES05** | Aksesibilitas Pembatalan | Alur pembatalan pengunggahan dan penggantian berkas dapat diakses dengan mudah pada setiap tahapan layar. |
-| **RES06** | Penguncian Otomatis Tenggat Waktu | Panel kontrol memiliki toggle *"Tenggat Waktu Berakhir"* yang secara otomatis mengunci dan menonaktifkan tombol *Ganti Berkas* & *Hapus Jawaban* pada S5. |
-| **F-05** | Fitts's Law & Safety Margin | Tombol *Batal* dan *Kirim Sekarang* pada dialog konfirmasi dipisahkan dengan jarak aman untuk mencegah salah tekan (accidental tap). |
+Antarmuka prototipe terdiri atas dua area kerja utama:
+1. **Bingkai Ponsel Cerdas (Pusat Layar)**: Mensimulasikan pengalaman pengguna saat mengoperasikan aplikasi mobile SEVIMA EdLink. Seluruh tombol, kartu berkas, tautan navigasi, dan kotak dialog di dalam bingkai ini dapat diklik secara interaktif.
+2. **Panel Kontrol Simulasi (Sisi Kiri Desktop)**: Disediakan khusus untuk kebutuhan pengujian penguji/dosen serta demonstrasi video:
+   - **Lompat Cepat Layar (S1 sampai S6)**: Tombol pintas untuk berpindah antar-state secara instan.
+   - **Mode Kontras Tinggi (INC02)**: Mengalihkan tema antarmuka ponsel ke gaya monokrom dengan kontras maksimal.
+   - **Tenggat Waktu Berakhir (RES06)**: Menguji perilaku sistem ketika batas waktu tugas telah habis, yang secara otomatis mengunci opsi pengubahan dan penghapusan pada Layar S5.
+   - **Reset Prototipe**: Mengembalikan seluruh variabel status, data berkas, dan posisi layar ke kondisi awal (Layar S1).
+   - **Katalog Rekomendasi IMK**: Menampilkan deskripsi otomatis dari temuan audit yang relevan dengan layar yang sedang aktif.
 
 ---
 
-## 🛠️ Tumpukan Teknologi (Tech Stack)
+## 6. Petunjuk Menjalankan Aplikasi dan Deployment
 
-- **HTML5**: Arsitektur Semantic Web & Single-File Application (`index.html`).
-- **Tailwind CSS (CDN)**: Styling utilitas responsif, palet WCAG AAA, dan tata letak flex/grid.
-- **Lucide Icons**: Library ikon vektor modern, tajam, dan konsisten.
-- **Vanilla JavaScript (ES6+)**: Mesin state management ringan tanpa dependensi framework eksternal.
+### Menjalankan Secara Lokal
+Prototipe ini merupakan aplikasi web statis berbasis HTML5, Tailwind CSS (CDN), dan Lucide Icons tanpa memerlukan proses kompilasi (*zero-build*).
 
----
+Gunakan salah satu perintah berikut pada terminal di dalam folder proyek:
+- Menggunakan Python:
+  ```bash
+  python -m http.server 8080
+  ```
+- Menggunakan Node.js:
+  ```bash
+  npx serve -l 8080 .
+  ```
+Akses aplikasi melalui peramban web pada alamat: `http://localhost:8080/index.html`.
 
-## 🚀 Cara Menjalankan Secara Lokal
-
-Cukup jalankan server HTTP statis sederhana di folder proyek:
-
-```bash
-# Opsi 1: Menggunakan Python
-python -m http.server 8080
-
-# Opsi 2: Menggunakan Node.js / npx serve
-npx serve -l 8080 .
-```
-
-Buka peramban web pada alamat:  
-👉 **`http://localhost:8080/index.html`**
-
----
-
-## ☁️ Panduan Deploy ke Vercel
-
-Proyek ini telah dikonfigurasi sebagai **Static Web Application** standar tanpa memerlukan langkah *build* (`zero-config`).
-
-### Cara 1: Menggunakan Git & Dashboard Vercel (Direkomendasikan)
-1. Buat repositori baru di akun GitHub Anda (misal: `sevima-edlink-hci-prototype`).
-2. Push commit lokal ke GitHub:
-   ```bash
-   git remote add origin https://github.com/<username>/sevima-edlink-hci-prototype.git
-   git branch -M main
-   git push -u origin main
-   ```
-3. Buka dashboard [Vercel](https://vercel.com/) dan klik **"Add New..."** → **"Project"**.
-4. Import repositori GitHub tersebut.
-5. Biarkan pengaturan default (*Framework Preset: Other*, *Root Directory: ./*), lalu klik **"Deploy"**.
-
-### Cara 2: Menggunakan Vercel CLI Langsung
-```bash
-npx vercel --prod
-```
-Ikuti petunjuk di terminal untuk menghubungkan ke akun Vercel dan situs akan langsung aktif dalam hitungan detik.
+### Deployment ke Vercel
+Karena berkas utama telah dinamai `index.html` dan diletakkan pada direktori root, proyek ini siap di-deploy langsung ke Vercel:
+1. Hubungkan repositori Git ini ke akun GitHub.
+2. Buka dashboard Vercel, pilih *Import Project*, dan arahkan ke repositori ini.
+3. Tetapkan *Framework Preset* pada opsi *Other* dan *Root Directory* pada `./`.
+4. Tekan *Deploy* untuk mempublikasikan prototipe secara daring.

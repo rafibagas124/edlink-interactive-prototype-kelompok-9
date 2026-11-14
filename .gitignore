@@ -1,4 +1,20 @@
-# Editors & IDE
+# Environment Variables & Secrets
+.env
+.env.*
+*.env
+*.local
+
+# Node & Package Managers
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Deployment & Hosting
+.vercel/
+
+# IDE & Editor Configurations
 .vscode/
 .idea/
 *.suo
@@ -7,10 +23,13 @@
 *.sln
 *.sw?
 
-# OS generated files
+# Operating System Files
 .DS_Store
 Thumbs.db
 ehthumbs.db
+[Dd]esktop.ini
 
-# Logs & temp
+# Logs & Temporary Files
 *.log
+scratch/
+tmp/
