@@ -1,10 +1,14 @@
 # Laporan Prototipe Interaktif SEVIMA EdLink
 
-Dokumentasi ini disusun untuk memenuhi **Assignment 3: Interactive Prototyping** pada mata kuliah **Interaksi Manusia dan Komputer (Kode Mata Kuliah: SIN63122)**, Program Studi Sistem Informasi / Informatika, Fakultas Teknologi Komunikasi dan Informatika, **Jakarta Global University**.
+Dokumentasi ini disusun untuk memenuhi **Assignment 3: Interactive Prototyping** pada mata kuliah **Interaksi Manusia dan Komputer (Kode Mata Kuliah: SIN63122)**, Program Studi Sistem Informasi / Informatika, Fakultas Teknologi Komunikasi dan Informatika, **Jakarta Global University**, di bawah bimbingan dosen pengampu **Onki Alexander, BCM., M.IT.**.
 
 ---
 
-## 1. Identitas Penyusun
+## 1. Identitas Mata Kuliah dan Penyusun
+
+- **Mata Kuliah**: Interaksi Manusia dan Komputer (SIN63122)
+- **Dosen Pengampu**: Onki Alexander, BCM., M.IT.
+- **Institusi**: Jakarta Global University
 
 Penyusunan prototipe interaktif dan dokumentasi evaluasi ini dilakukan oleh **Kelompok 9**:
 
